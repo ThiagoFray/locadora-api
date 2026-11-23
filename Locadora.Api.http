@@ -1,0 +1,493 @@
+@baseUrl = http://localhost:5000
+
+#############################################
+# CLIENTES
+#############################################
+
+### C1 - Listar clientes (200)
+GET {{baseUrl}}/clientes
+
+### C2 - Buscar cliente por Id (200)
+GET {{baseUrl}}/clientes/1
+
+### C3 - Cadastrar cliente (201)
+POST {{baseUrl}}/clientes
+Content-Type: application/json
+
+{
+  "cpf": "45678912300",
+  "nome": "Diego Rocha",
+  "cnh": "12312312312",
+  "vencimentoCnh": "2029-05-10",
+  "telefone": "49999990004"
+}
+
+### C4 - Buscar cliente por CPF (200)
+GET {{baseUrl}}/clientes/cpf/45678912300
+
+### C5 - Atualizar cliente (200)
+PUT {{baseUrl}}/clientes/4
+Content-Type: application/json
+
+{
+  "nome": "Diego Rocha da Silva",
+  "cnh": "12312312312",
+  "vencimentoCnh": "2030-01-15",
+  "telefone": "49988887777"
+}
+
+### C6 - ERRO: CPF repetido (409)
+POST {{baseUrl}}/clientes
+Content-Type: application/json
+
+{
+  "cpf": "12345678901",
+  "nome": "Outra Pessoa",
+  "cnh": "00011122233",
+  "vencimentoCnh": "2029-01-01",
+  "telefone": "49900000000"
+}
+
+### C7 - ERRO: CPF inválido (400)
+POST {{baseUrl}}/clientes
+Content-Type: application/json
+
+{
+  "cpf": "123",
+  "nome": "Teste",
+  "cnh": "00011122233",
+  "vencimentoCnh": "2029-01-01",
+  "telefone": "49900000000"
+}
+
+### C8 - ERRO: nome vazio (400)
+POST {{baseUrl}}/clientes
+Content-Type: application/json
+
+{
+  "cpf": "55544433322",
+  "nome": "",
+  "cnh": "00011122233",
+  "vencimentoCnh": "2029-01-01",
+  "telefone": "49900000000"
+}
+
+### C9 - ERRO: atualizar cliente inexistente (404)
+PUT {{baseUrl}}/clientes/99
+Content-Type: application/json
+
+{
+  "nome": "Ninguém",
+  "cnh": "00011122233",
+  "vencimentoCnh": "2029-01-01",
+  "telefone": "49900000000"
+}
+
+### C10 - ERRO: excluir cliente com locação (409) - Bruno tem locação
+DELETE {{baseUrl}}/clientes/2
+
+### C11 - Excluir cliente sem locação (204)
+DELETE {{baseUrl}}/clientes/4
+
+### C12 - Confirmar exclusão (404)
+GET {{baseUrl}}/clientes/4
+
+
+#############################################
+# VEÍCULOS
+#############################################
+
+### V1 - Listar veículos (200)
+GET {{baseUrl}}/veiculos
+
+### V2 - Buscar por placa, com letras minúsculas (200)
+GET {{baseUrl}}/veiculos/placa/abc1d23
+
+### V3 - Cadastrar veículo (201)
+POST {{baseUrl}}/veiculos
+Content-Type: application/json
+
+{
+  "placa": "QWE2R34",
+  "modelo": "Renault Kwid",
+  "ano": 2024,
+  "valorDiaria": 110.00,
+  "quilometragemAtual": 5000
+}
+
+### V4 - Atualizar dados do veículo (200)
+PUT {{baseUrl}}/veiculos/4
+Content-Type: application/json
+
+{
+  "modelo": "Renault Kwid Intense",
+  "ano": 2024,
+  "valorDiaria": 125.00
+}
+
+### V5 - Atualizar quilometragem (200)
+PUT {{baseUrl}}/veiculos/4/quilometragem
+Content-Type: application/json
+
+{
+  "novaKm": 5500
+}
+
+### V6 - ERRO: quilometragem menor que a atual (400)
+PUT {{baseUrl}}/veiculos/4/quilometragem
+Content-Type: application/json
+
+{
+  "novaKm": 1000
+}
+
+### V7 - Enviar para manutenção (200)
+PUT {{baseUrl}}/veiculos/4/manutencao
+
+### V8 - ERRO: enviar para manutenção de novo (400)
+PUT {{baseUrl}}/veiculos/4/manutencao
+
+### V9 - Retornar da manutenção (200)
+PUT {{baseUrl}}/veiculos/4/retorno-manutencao
+
+### V10 - ERRO: veículo alugado não vai para manutenção (400) - Onix está alugado
+PUT {{baseUrl}}/veiculos/2/manutencao
+
+### V11 - ERRO: placa repetida (409)
+POST {{baseUrl}}/veiculos
+Content-Type: application/json
+
+{
+  "placa": "ABC1D23",
+  "modelo": "Outro Carro",
+  "ano": 2020,
+  "valorDiaria": 100.00,
+  "quilometragemAtual": 0
+}
+
+### V12 - ERRO: ano inválido (400)
+POST {{baseUrl}}/veiculos
+Content-Type: application/json
+
+{
+  "placa": "AAA0A00",
+  "modelo": "Fusca",
+  "ano": 1900,
+  "valorDiaria": 80.00,
+  "quilometragemAtual": 0
+}
+
+### V13 - ERRO: diária zerada (400)
+POST {{baseUrl}}/veiculos
+Content-Type: application/json
+
+{
+  "placa": "BBB1B11",
+  "modelo": "Gol",
+  "ano": 2020,
+  "valorDiaria": 0,
+  "quilometragemAtual": 0
+}
+
+### V14 - ERRO: excluir veículo com locação (409) - Onix tem locação
+DELETE {{baseUrl}}/veiculos/2
+
+### V15 - Excluir veículo sem locação (204)
+DELETE {{baseUrl}}/veiculos/4
+
+### V16 - ERRO: veículo inexistente (404)
+GET {{baseUrl}}/veiculos/99
+
+#############################################
+# FUNCIONÁRIOS
+#############################################
+
+### F1 - Listar funcionários, sem senha (200)
+GET {{baseUrl}}/funcionarios
+
+### F2 - Buscar por matrícula (200)
+GET {{baseUrl}}/funcionarios/F002
+
+### F3 - Cadastrar funcionário (201)
+POST {{baseUrl}}/funcionarios
+Content-Type: application/json
+
+{
+  "matricula": "F003",
+  "nome": "Lucas Pereira",
+  "cargo": "Atendente",
+  "senha": "abc123"
+}
+
+### F4 - Atualizar funcionário, trocando a senha (200)
+PUT {{baseUrl}}/funcionarios/F003
+Content-Type: application/json
+
+{
+  "nome": "Lucas Pereira",
+  "cargo": "Supervisor",
+  "senha": "nova123"
+}
+
+### F5 - Login com a senha nova (200)
+POST {{baseUrl}}/funcionarios/login
+Content-Type: application/json
+
+{
+  "matricula": "F003",
+  "senha": "nova123"
+}
+
+### F6 - ERRO: login com a senha antiga (401)
+POST {{baseUrl}}/funcionarios/login
+Content-Type: application/json
+
+{
+  "matricula": "F003",
+  "senha": "abc123"
+}
+
+### F7 - ERRO: login com matrícula inexistente (401)
+POST {{baseUrl}}/funcionarios/login
+Content-Type: application/json
+
+{
+  "matricula": "F999",
+  "senha": "1234"
+}
+
+### F8 - ERRO: login sem matrícula no JSON (401)
+POST {{baseUrl}}/funcionarios/login
+Content-Type: application/json
+
+{
+  "senha": "1234"
+}
+
+### F9 - ERRO: matrícula repetida (409)
+POST {{baseUrl}}/funcionarios
+Content-Type: application/json
+
+{
+  "matricula": "F001",
+  "nome": "Outro",
+  "cargo": "Atendente",
+  "senha": "1234"
+}
+
+### F10 - ERRO: cargo vazio (400)
+POST {{baseUrl}}/funcionarios
+Content-Type: application/json
+
+{
+  "matricula": "F010",
+  "nome": "Teste",
+  "cargo": "",
+  "senha": "1234"
+}
+
+### F11 - ERRO: excluir funcionário com locação (409) - Pedro tem locação
+DELETE {{baseUrl}}/funcionarios/F001
+
+### F12 - Excluir funcionário sem locação (204)
+DELETE {{baseUrl}}/funcionarios/F003
+
+### F13 - ERRO: confirmar exclusão (404)
+GET {{baseUrl}}/funcionarios/F003
+
+
+#############################################
+# LOCAÇÕES
+#############################################
+# Estado inicial (dados mocados):
+#   Clientes: 1-Ana (ok) | 2-Bruno (com locação ativa) | 3-Carla (CNH vencida)
+#   Veículos: 1-Mobi (Disponivel, R$120) | 2-Onix (Alugado) | 3-Corolla (EmManutencao)
+#   Funcionários: F001-Pedro | F002-Mariana
+#   Locação 1: Bruno + Onix (ativa)
+
+### L1 - Listar locações (200)
+GET {{baseUrl}}/locacoes
+
+### L2 - Buscar locação por Id (200)
+GET {{baseUrl}}/locacoes/1
+
+### L3 - Registrar locação: Ana + Mobi, 4 dias (201)
+POST {{baseUrl}}/locacoes
+Content-Type: application/json
+
+{
+  "clienteId": 1,
+  "veiculoId": 1,
+  "matriculaFuncionario": "F002",
+  "dataInicio": "{{$localDatetime 'YYYY-MM-DD'}}",
+  "dataFimPrevista": "{{$localDatetime 'YYYY-MM-DD' 4 d}}"
+}
+
+### L4 - Conferir cliente: Ana agora tem locação ativa (200)
+GET {{baseUrl}}/clientes/1
+
+### L5 - Conferir veículo: Mobi agora está Alugado (200)
+GET {{baseUrl}}/veiculos/1
+
+### L6 - Preparação: tirar o Corolla da manutenção (200)
+PUT {{baseUrl}}/veiculos/3/retorno-manutencao
+
+### L7 - ERRO: Ana já tem locação ativa (409)
+POST {{baseUrl}}/locacoes
+Content-Type: application/json
+
+{
+  "clienteId": 1,
+  "veiculoId": 3,
+  "matriculaFuncionario": "F001",
+  "dataInicio": "{{$localDatetime 'YYYY-MM-DD'}}",
+  "dataFimPrevista": "{{$localDatetime 'YYYY-MM-DD' 2 d}}"
+}
+
+### L8 - ERRO: Carla está com a CNH vencida (400)
+POST {{baseUrl}}/locacoes
+Content-Type: application/json
+
+{
+  "clienteId": 3,
+  "veiculoId": 3,
+  "matriculaFuncionario": "F001",
+  "dataInicio": "{{$localDatetime 'YYYY-MM-DD'}}",
+  "dataFimPrevista": "{{$localDatetime 'YYYY-MM-DD' 2 d}}"
+}
+
+### L9 - ERRO: veículo indisponível - Mobi está alugado (409)
+POST {{baseUrl}}/locacoes
+Content-Type: application/json
+
+{
+  "clienteId": 2,
+  "veiculoId": 1,
+  "matriculaFuncionario": "F001",
+  "dataInicio": "{{$localDatetime 'YYYY-MM-DD'}}",
+  "dataFimPrevista": "{{$localDatetime 'YYYY-MM-DD' 2 d}}"
+}
+
+### L10 - ERRO: data de fim antes da data de início (400)
+POST {{baseUrl}}/locacoes
+Content-Type: application/json
+
+{
+  "clienteId": 2,
+  "veiculoId": 3,
+  "matriculaFuncionario": "F001",
+  "dataInicio": "{{$localDatetime 'YYYY-MM-DD' 3 d}}",
+  "dataFimPrevista": "{{$localDatetime 'YYYY-MM-DD' 1 d}}"
+}
+
+### L11 - ERRO: data de início no passado (400)
+POST {{baseUrl}}/locacoes
+Content-Type: application/json
+
+{
+  "clienteId": 2,
+  "veiculoId": 3,
+  "matriculaFuncionario": "F001",
+  "dataInicio": "{{$localDatetime 'YYYY-MM-DD' -1 d}}",
+  "dataFimPrevista": "{{$localDatetime 'YYYY-MM-DD' 2 d}}"
+}
+
+### L12 - ERRO: cliente inexistente (404)
+POST {{baseUrl}}/locacoes
+Content-Type: application/json
+
+{
+  "clienteId": 99,
+  "veiculoId": 3,
+  "matriculaFuncionario": "F001",
+  "dataInicio": "{{$localDatetime 'YYYY-MM-DD'}}",
+  "dataFimPrevista": "{{$localDatetime 'YYYY-MM-DD' 2 d}}"
+}
+
+### L13 - ERRO: funcionário inexistente (404)
+POST {{baseUrl}}/locacoes
+Content-Type: application/json
+
+{
+  "clienteId": 1,
+  "veiculoId": 3,
+  "matriculaFuncionario": "F999",
+  "dataInicio": "{{$localDatetime 'YYYY-MM-DD'}}",
+  "dataFimPrevista": "{{$localDatetime 'YYYY-MM-DD' 2 d}}"
+}
+
+### L14 - Locações de um cliente: Ana (200)
+GET {{baseUrl}}/locacoes/cliente/1
+
+### L15 - Locações de um veículo: Mobi (200)
+GET {{baseUrl}}/locacoes/veiculo/1
+
+### L16 - Consultar multa da locação 2: ainda no prazo (200)
+GET {{baseUrl}}/locacoes/2/multa
+
+### L17 - Finalizar locação 2 COM ATRASO de 2 dias (200)
+# Fim previsto: hoje + 4. Devolução simulada: hoje + 6.
+PUT {{baseUrl}}/locacoes/2/finalizar
+Content-Type: application/json
+
+{
+  "dataDevolucao": "{{$localDatetime 'YYYY-MM-DD' 6 d}}",
+  "kmFinal": 35800
+}
+
+### L18 - Consultar multa da locação 2: agora com atraso (200)
+GET {{baseUrl}}/locacoes/2/multa
+
+### L19 - Conferir cliente: Ana foi liberada (200)
+GET {{baseUrl}}/clientes/1
+
+### L20 - Conferir veículo: Mobi Disponivel com km atualizada (200)
+GET {{baseUrl}}/veiculos/1
+
+### L21 - ERRO: finalizar a mesma locação de novo (400)
+PUT {{baseUrl}}/locacoes/2/finalizar
+Content-Type: application/json
+
+{
+  "dataDevolucao": "{{$localDatetime 'YYYY-MM-DD' 6 d}}",
+  "kmFinal": 36000
+}
+
+### L22 - ERRO: finalizar com km menor que a atual (400)
+PUT {{baseUrl}}/locacoes/1/finalizar
+Content-Type: application/json
+
+{
+  "dataDevolucao": "{{$localDatetime 'YYYY-MM-DD' 3 d}}",
+  "kmFinal": 100
+}
+
+### L23 - Conferir: a locação 1 continua Ativa (nada foi alterado) (200)
+GET {{baseUrl}}/locacoes/1
+
+### L24 - Finalizar locação 1 NO PRAZO, sem multa (200)
+PUT {{baseUrl}}/locacoes/1/finalizar
+Content-Type: application/json
+
+{
+  "dataDevolucao": "{{$localDatetime 'YYYY-MM-DD' 3 d}}",
+  "kmFinal": 18500
+}
+
+### L25 - Ana pode alugar de novo depois de devolver (201)
+POST {{baseUrl}}/locacoes
+Content-Type: application/json
+
+{
+  "clienteId": 1,
+  "veiculoId": 1,
+  "matriculaFuncionario": "F001",
+  "dataInicio": "{{$localDatetime 'YYYY-MM-DD'}}",
+  "dataFimPrevista": "{{$localDatetime 'YYYY-MM-DD' 2 d}}"
+}
+
+### L26 - Locações atrasadas: nenhuma ativa em atraso (200)
+GET {{baseUrl}}/locacoes/atrasadas
+
+### L27 - ERRO: locação inexistente (404)
+GET {{baseUrl}}/locacoes/99
